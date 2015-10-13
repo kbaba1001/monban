@@ -96,9 +96,18 @@ module Monban
   #     config.user_lookup_field = :username
   #     config.user_token_store_field = :hashed_password
   #   end
-  def self.configure(&block)
-    self.config ||= Monban::Configuration.new
-    yield self.config
+  # NOTE ココらへんで名前空間を扱えるようにするのが良さそう
+  def self.configure(scope = nil, &block)
+    if scope
+      # 全体的に self.config は hash として扱えば良さそう
+      self.config[scope] ||= Monban::Configuration.new
+      self.warden_config ||= WardenSetup.new(warden_config, scope).call
+      yield self.config[scope]
+    else
+      # self.config[:_all] ||= Monban::Configuration.new
+      self.config ||= Monban::Configuration.new
+      yield self.config
+    end
   end
 
   # Resets monban in between tests.
@@ -114,6 +123,6 @@ module Monban
   end
 
   def self.setup_warden_config(warden_config)
-    self.warden_config = WardenSetup.new(warden_config).call
+    self.warden_config ||= WardenSetup.new(warden_config).call
   end
 end

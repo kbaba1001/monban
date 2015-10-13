@@ -4,8 +4,9 @@ require "monban/strategies/password_strategy"
 module Monban
   # Sets up warden specifics for working with monban
   class WardenSetup
-    def initialize(warden_config)
+    def initialize(warden_config, scope = nil)
       @warden_config = warden_config
+      @scope = scope
     end
 
     # Sets up warden specifics for working with monban:
@@ -20,13 +21,14 @@ module Monban
 
     private
     attr_reader :warden_config
+    attr_reader :scope
 
     def setup_warden_manager
-      Warden::Manager.serialize_into_session do |user|
+      Warden::Manager.serialize_into_session(scope) do |user|
         user.id
       end
 
-      Warden::Manager.serialize_from_session do |id|
+      Warden::Manager.serialize_from_session(scope) do |id|
         Monban.config.user_class.find_by(id: id)
       end
     end
