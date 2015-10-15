@@ -18,7 +18,7 @@ module Monban
     # @yield Yields to the block if the user is successfully signed in
     # @return [Object] returns the value from calling perform on the {Monban::Services::SignIn} service
     def sign_in user
-      Monban.config.sign_in_service.new(user, warden).perform.tap do |status|
+      Monban.config(authenticate_scope).sign_in_service.new(user, warden).perform.tap do |status|
         if status && block_given?
           yield
         end
@@ -31,7 +31,7 @@ module Monban
     #
     # @return [Object] returns the value from calling perform on the {Monban::Services::SignOut} service
     def sign_out
-      Monban.config.sign_out_service.new(warden).perform
+      Monban.config(authenticate_scope).sign_out_service.new(warden).perform
     end
 
     # Sign up a user
@@ -42,7 +42,7 @@ module Monban
     # @yield Yields to the block if the user is signed up successfully
     # @return [Object] returns the value from calling perform on the {Monban::Services::SignUp} service
     def sign_up user_params
-      Monban.config.sign_up_service.new(user_params).perform.tap do |status|
+      Monban.config(authenticate_scope).sign_up_service.new(user_params).perform.tap do |status|
         if status && block_given?
           yield
         end
@@ -97,7 +97,7 @@ module Monban
     #    end
 
     def authenticate_session session_params, field_map = nil
-      token_field = Monban.config.user_token_field
+      token_field = Monban.config(authenticate_scope).user_token_field
       session_params_hash = session_params.to_h.symbolize_keys
       password = session_params_hash.fetch(token_field)
       user = Monban.lookup(session_params_hash.except(token_field), field_map)
@@ -113,7 +113,7 @@ module Monban
     # @return [User] if authentication succeeded
     # @return [nil] if authentication failed
     def authenticate user, password
-      Monban.config.authentication_service.new(user, password).perform
+      Monban.config(authenticate_scope).authentication_service.new(user, password).perform
     end
 
     # Resets a user's password
@@ -123,7 +123,7 @@ module Monban
     # @param user [User] the user
     # @param password [String] the password
     def reset_password user, password
-      Monban.config.password_reset_service.new(user, password).perform
+      Monban.config(authenticate_scope).password_reset_service.new(user, password).perform
     end
 
     # @api private
@@ -152,8 +152,14 @@ module Monban
     # @note Uses the no login handler
     def require_login
       unless signed_in?
-        Monban.config.no_login_handler.call(self)
+        Monban.config(authenticate_scope).no_login_handler.call(self)
       end
+    end
+
+    private
+
+    def authenticate_scope
+      nil
     end
   end
 end

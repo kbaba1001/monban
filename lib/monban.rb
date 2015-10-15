@@ -125,7 +125,7 @@ module Monban
 
   def self.setup_warden_config(warden_config)
     @@warden_config = {}
-    @@warden_config[scope_with_default] ||= WardenSetup.new(warden_config, scope_with_default).call
+    @@warden_config[scope_with_default] = WardenSetup.new(warden_config, scope_with_default).call
   end
 
   def self.scope_with_default(scope = nil)
