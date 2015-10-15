@@ -16,9 +16,6 @@ require "active_support/core_ext/module/attribute_accessors"
 # {http://github.com/halogenandtoast/monban-generators Monban Generators}
 # @since 0.0.15
 module Monban
-  mattr_accessor :warden_config
-  mattr_accessor :config
-
   module Test
     autoload :Helpers, "monban/test/helpers"
     autoload :ControllerHelpers, "monban/test/controller_helpers"
@@ -98,16 +95,11 @@ module Monban
   #   end
   # NOTE ココらへんで名前空間を扱えるようにするのが良さそう
   def self.configure(scope = nil, &block)
-    if scope
-      # 全体的に self.config は hash として扱えば良さそう
-      self.config[scope] ||= Monban::Configuration.new
-      self.warden_config ||= WardenSetup.new(warden_config, scope).call
-      yield self.config[scope]
-    else
-      # self.config[:_all] ||= Monban::Configuration.new
-      self.config ||= Monban::Configuration.new
-      yield self.config
-    end
+    _scope = scope_with_default(scope)
+
+    self.config[_scope] ||= Monban::Configuration.new
+    self.warden_config[_scope] ||= WardenSetup.new(warden_config, _scope).call
+    yield self.config[_scope]
   end
 
   # Resets monban in between tests.
@@ -116,13 +108,27 @@ module Monban
     Warden.test_reset!
   end
 
+  def self.config(scope = nil)
+    @@config[scope_with_default(scope)]
+  end
+
+  def self.warden_config(scope = nil)
+    @@warden_config[scope_with_default(scope)]
+  end
+
   private
 
   def self.setup_config
-    self.config ||= Monban::Configuration.new
+    @@config = {}
+    @@config[scope_with_default] = Monban::Configuration.new
   end
 
   def self.setup_warden_config(warden_config)
-    self.warden_config ||= WardenSetup.new(warden_config).call
+    @@warden_config = {}
+    @@warden_config[scope_with_default] ||= WardenSetup.new(warden_config, scope_with_default).call
+  end
+
+  def self.scope_with_default(scope = nil)
+    scope ? scope : :user
   end
 end
