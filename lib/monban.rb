@@ -16,6 +16,12 @@ require "active_support/core_ext/module/attribute_accessors"
 # {http://github.com/halogenandtoast/monban-generators Monban Generators}
 # @since 0.0.15
 module Monban
+  mattr_writer :warden_config
+  mattr_writer :config
+
+  @@warden_config = {}
+  @@config = {}
+
   module Test
     autoload :Helpers, "monban/test/helpers"
     autoload :ControllerHelpers, "monban/test/controller_helpers"
@@ -97,8 +103,8 @@ module Monban
   def self.configure(scope = nil, &block)
     _scope = scope_with_default(scope)
 
-    self.config[_scope] ||= Monban::Configuration.new
-    self.warden_config[_scope] ||= WardenSetup.new(warden_config, _scope).call
+    @@config[_scope] ||= Monban::Configuration.new
+    # @@warden_config[_scope] ||= WardenSetup.new(warden_config, _scope).call
     yield self.config[_scope]
   end
 
@@ -119,12 +125,10 @@ module Monban
   private
 
   def self.setup_config
-    @@config = {}
     @@config[scope_with_default] = Monban::Configuration.new
   end
 
   def self.setup_warden_config(warden_config)
-    @@warden_config = {}
     @@warden_config[scope_with_default] ||= WardenSetup.new(warden_config, scope_with_default).call
   end
 
