@@ -104,8 +104,7 @@ module Monban
     _scope = scope_with_default(scope)
 
     @@config[_scope] ||= Monban::Configuration.new
-    # @@warden_config[_scope] ||= WardenSetup.new(warden_config, _scope).call
-    yield self.config[_scope]
+    yield @@config[_scope]
   end
 
   # Resets monban in between tests.
@@ -125,11 +124,11 @@ module Monban
   private
 
   def self.setup_config
-    @@config[scope_with_default] = Monban::Configuration.new
+    @@config[scope_with_default] ||= Monban::Configuration.new
   end
 
   def self.setup_warden_config(warden_config)
-    @@warden_config[scope_with_default] ||= WardenSetup.new(warden_config, scope_with_default).call
+    @@warden_config[scope_with_default] = WardenSetup.new(warden_config, scope_with_default).call
   end
 
   def self.scope_with_default(scope = nil)
