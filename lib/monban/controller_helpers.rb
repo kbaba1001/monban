@@ -18,7 +18,7 @@ module Monban
     # @yield Yields to the block if the user is successfully signed in
     # @return [Object] returns the value from calling perform on the {Monban::Services::SignIn} service
     def sign_in user
-      Monban.config(authenticate_scope).sign_in_service.new(user, warden).perform.tap do |status|
+      Monban.config(authenticate_scope).sign_in_service.new(user, warden, authenticate_scope).perform.tap do |status|
         if status && block_given?
           yield
         end
@@ -31,7 +31,7 @@ module Monban
     #
     # @return [Object] returns the value from calling perform on the {Monban::Services::SignOut} service
     def sign_out
-      Monban.config(authenticate_scope).sign_out_service.new(warden).perform
+      Monban.config(authenticate_scope).sign_out_service.new(warden, authenticate_scope).perform
     end
 
     # Sign up a user
@@ -136,7 +136,7 @@ module Monban
     # @return [User] if user is signed in
     # @return [nil] if user is not signed in
     def current_user
-      @current_user ||= warden.user
+      @current_user ||= warden.user(authenticate_scope)
     end
 
     # helper_method that checks if there is a user signed in
@@ -144,7 +144,7 @@ module Monban
     # @return [User] if user is signed in
     # @return [nil] if user is not signed in
     def signed_in?
-      warden.user
+      warden.user(authenticate_scope)
     end
 
     # before_action that determines what to do when the user is not signed in

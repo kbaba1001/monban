@@ -6,13 +6,14 @@ module Monban
       # Initialize service
       #
       # @param warden [Warden] warden
-      def initialize warden
+      def initialize(warden, scope = nil)
         @warden = warden
+        @scope = scope
       end
 
       # Perform the service
       def perform
-        @warden.logout
+        @warden.logout(@scope)
       end
     end
   end

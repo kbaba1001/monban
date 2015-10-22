@@ -7,14 +7,15 @@ module Monban
       #
       # @param user [User] A user object
       # @param warden [Warden] warden
-      def initialize user, warden
+      def initialize(user, warden, scope = nil)
         @user = user
         @warden = warden
+        @scope = scope
       end
 
       # Perform the service
       def perform
-        @warden.set_user(@user)
+        @warden.set_user(@user, scope: @scope)
       end
     end
   end
