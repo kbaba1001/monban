@@ -7,7 +7,7 @@ module Monban
     attr_accessor :sign_in_notice
     attr_accessor :sign_in_service, :sign_up_service, :sign_out_service
     attr_accessor :authentication_service, :password_reset_service
-    attr_accessor :failure_app
+    attr_accessor :failure_app, :session_default_scope
     attr_accessor :creation_method, :find_method
     attr_accessor :no_login_handler, :no_login_redirect
     attr_accessor :authentication_strategy
@@ -111,6 +111,7 @@ module Monban
     def setup_warden_requirements
       @failure_app = Monban::FailureApp
       @authentication_strategy = Monban::Strategies::PasswordStrategy
+      @session_default_scope = :user
     end
   end
 end

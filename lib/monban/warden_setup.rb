@@ -40,6 +40,7 @@ module Monban
     def setup_warden_config
       warden_config.tap do |config|
         config.failure_app = Monban.config.failure_app
+        config.default_scope = Monban.config.session_default_scope
       end
     end
   end
