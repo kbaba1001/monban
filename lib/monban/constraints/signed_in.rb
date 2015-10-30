@@ -2,7 +2,7 @@ module Monban
   module Constraints
     # Rails route constraint for signed in users
     class SignedIn
-      def initialize(scope = Monban.config.session_default_scope)
+      def initialize(scope = nil)
         @scope = scope
       end
 

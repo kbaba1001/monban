@@ -2,7 +2,7 @@ module Monban
   module Constraints
     # Rails route constraint for signed out users
     class SignedOut
-      def initialize(scope = Monban.config.session_default_scope)
+      def initialize(scope = nil)
         @scope = scope
       end
 
