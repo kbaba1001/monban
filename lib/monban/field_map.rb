@@ -6,9 +6,10 @@ module Monban
   class FieldMap
     # @param params [Hash] hash of parameters
     # @param field_map [Hash] hash of values to map
-    def initialize params, field_map
+    def initialize params, field_map, scope
       @params = params
       @field_map = field_map
+      @scope = scope
     end
 
     # converts params into values that can be passed into a where clause
@@ -30,7 +31,7 @@ module Monban
     end
 
     def default_fields
-      { Monban.config.user_lookup_field => nil }
+      { Monban.config(@scope).user_lookup_field => nil }
     end
 
     def params_from_field_map

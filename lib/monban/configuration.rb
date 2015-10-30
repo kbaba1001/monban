@@ -47,7 +47,7 @@ module Monban
     # @see #find_method=
     # @see Monban.config.user_class
     def default_find_method
-      ->(params) { Monban.config.user_class.find_by(params) }
+      ->(params, scope) { Monban.config(scope).user_class.find_by(params) }
     end
 
     # Default token comparison method. Can be overriden via {Monban.configure}

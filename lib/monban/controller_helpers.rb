@@ -100,7 +100,7 @@ module Monban
       token_field = Monban.config(authenticate_scope).user_token_field
       session_params_hash = session_params.to_h.symbolize_keys
       password = session_params_hash.fetch(token_field)
-      user = Monban.lookup(session_params_hash.except(token_field), field_map)
+      user = Monban.lookup(session_params_hash.except(token_field), field_map, authenticate_scope)
       authenticate(user, password)
     end
 
@@ -160,6 +160,7 @@ module Monban
 
     def authenticate_scope
       nil
+      # :user
     end
   end
 end

@@ -75,9 +75,9 @@ module Monban
   # @see Monban::Configuration#default_find_method
   # @return [User] if user is found
   # @return [nil] if no user is found
-  def self.lookup(params, field_map)
-    fields = FieldMap.new(params, field_map).to_fields
-    self.config.find_method.call(fields)
+  def self.lookup(params, field_map, scope)
+    fields = FieldMap.new(params, field_map, scope).to_fields
+    self.config(scope).find_method.call(fields, scope)
   end
 
   # Puts monban into test mode. This will disable hashing passwords
