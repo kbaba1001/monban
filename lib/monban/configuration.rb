@@ -26,7 +26,7 @@ module Monban
     #
     # @see #creation_method=
     def default_creation_method
-      ->(params) { Monban.config.user_class.create(params) }
+      ->(params, scope) { Monban.config(scope).user_class.create(params) }
     end
 
     # Default hashing method. Can be overriden via {Monban.configure}

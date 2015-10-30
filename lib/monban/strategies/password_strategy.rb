@@ -12,7 +12,6 @@ module Monban
         lookup_field_value || token_field_value
       end
 
-
       # Authenticates for warden
       def authenticate!
         user = Monban.config.user_class.find_by(lookup_field => lookup_field_value)

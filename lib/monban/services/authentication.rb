@@ -7,9 +7,10 @@ module Monban
       #
       # @param user [User] A user object
       # @param undigested_token [String] An undigested password
-      def initialize user, undigested_token
+      def initialize user, undigested_token, scope
         @user = user
         @undigested_token = undigested_token
+        @scope = scope
       end
 
       # Perform the service
@@ -31,7 +32,7 @@ module Monban
       end
 
       def token_store_field
-        Monban.config.user_token_store_field
+        Monban.config(@scope).user_token_store_field
       end
     end
   end

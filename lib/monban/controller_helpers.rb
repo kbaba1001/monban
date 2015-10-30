@@ -113,7 +113,7 @@ module Monban
     # @return [User] if authentication succeeded
     # @return [nil] if authentication failed
     def authenticate user, password
-      Monban.config(authenticate_scope).authentication_service.new(user, password).perform
+      Monban.config(authenticate_scope).authentication_service.new(user, password, authenticate_scope).perform
     end
 
     # Resets a user's password
@@ -123,7 +123,7 @@ module Monban
     # @param user [User] the user
     # @param password [String] the password
     def reset_password user, password
-      Monban.config(authenticate_scope).password_reset_service.new(user, password).perform
+      Monban.config(authenticate_scope).password_reset_service.new(user, password, authenticate_scope).perform
     end
 
     # @api private

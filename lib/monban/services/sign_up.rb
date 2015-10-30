@@ -6,17 +6,18 @@ module Monban
       # Initialize service
       #
       # @param user_params [Hash] A hash of user credentials. Should contain the lookup and token fields
-      def initialize user_params
+      def initialize user_params, scope
         digested_token = token_digest(user_params)
         @user_params = user_params.
           except(token_field).
           merge(token_store_field.to_sym => digested_token)
+        @scope = scope
       end
 
       # Performs the service
       # @see Monban::Configuration.default_creation_method
       def perform
-        Monban.config.creation_method.call(@user_params.to_hash)
+        Monban.config(@scope).creation_method.call(@user_params.to_hash, @scope)
       end
 
       private
@@ -29,11 +30,11 @@ module Monban
       end
 
       def token_store_field
-        Monban.config.user_token_store_field
+        Monban.config(@scope).user_token_store_field
       end
 
       def token_field
-        Monban.config.user_token_field
+        Monban.config(@scope).user_token_field
       end
     end
   end

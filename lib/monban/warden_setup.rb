@@ -34,13 +34,13 @@ module Monban
     end
 
     def setup_warden_strategies
-      Warden::Strategies.add(:password_strategy, Monban.config.authentication_strategy)
+      Warden::Strategies.add(:password_strategy, Monban.config(@scope).authentication_strategy)
     end
 
     def setup_warden_config
       warden_config.tap do |config|
         config.failure_app = Monban.config.failure_app
-        config.default_scope = Monban.config.session_default_scope
+        config.default_scope = :user
       end
     end
   end
