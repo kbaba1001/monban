@@ -29,7 +29,7 @@ module Monban
       end
 
       Warden::Manager.serialize_from_session(scope) do |id|
-        Monban.config.user_class.find_by(id: id)
+        Monban.config(@scope).user_class.find_by(id: id)
       end
     end
 

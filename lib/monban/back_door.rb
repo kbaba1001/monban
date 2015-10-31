@@ -16,8 +16,9 @@ module Monban
   class BackDoor
     # Create the a new BackDoor middleware for test purposes
     # @return [BackDoor]
-    def initialize(app, &block)
+    def initialize(app, scope = nil, &block)
       @app = app
+      @scope = scope
 
       if block
         @sign_in_block = block
@@ -38,7 +39,7 @@ module Monban
 
       if user_id.present?
         user = find_user(user_id)
-        env["warden"].set_user(user)
+        env["warden"].set_user(user, scope: @scope)
       end
     end
 
@@ -46,7 +47,7 @@ module Monban
       if @sign_in_block
         @sign_in_block.call(user_id)
       else
-        Monban.config.user_class.find(user_id)
+        Monban.config(@scope).user_class.find(user_id)
       end
     end
   end
