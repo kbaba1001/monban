@@ -136,7 +136,13 @@ module Monban
     # @return [User] if user is signed in
     # @return [nil] if user is not signed in
     def current_user
-      @current_user ||= warden.user(authenticate_scope)
+      return @current_user if @current_user
+
+      @current_user = warden.user(authenticate_scope)
+      if @current_user.class == Hash
+        @current_user = Monban.config(authenticate_scope).user_class.find_by(id: @current_user['id'])
+      end
+      @current_user
     end
 
     # helper_method that checks if there is a user signed in
