@@ -44,8 +44,8 @@ module Monban
   # @param token [String] An undigested password
   # @see Monban::Configuration#default_token_comparison
   # @return [Boolean] whether the token and digest match
-  def self.compare_token(digest, token)
-    config.token_comparison.call(digest, token)
+  def self.compare_token(digest, token, scope = nil)
+    config(scope_with_default(scope)).token_comparison.call(digest, token)
   end
 
   # hashes a token
@@ -53,8 +53,8 @@ module Monban
   # @param token [String] the password in undigested form
   # @see Monban::Configuration#default_hashing_method
   # @return [String] a digest of the token
-  def self.hash_token(token)
-    config.hashing_method.call(token)
+  def self.hash_token(token, scope = nil)
+    config(scope_with_default(scope)).hashing_method.call(token)
   end
 
   # the user class
@@ -75,9 +75,10 @@ module Monban
   # @see Monban::Configuration#default_find_method
   # @return [User] if user is found
   # @return [nil] if no user is found
-  def self.lookup(params, field_map, scope)
-    fields = FieldMap.new(params, field_map, scope).to_fields
-    self.config(scope).find_method.call(fields, scope)
+  def self.lookup(params, field_map, scope = nil)
+    _scope = scope_with_default(scope)
+    fields = FieldMap.new(params, field_map, _scope).to_fields
+    self.config(_scope).find_method.call(fields, _scope)
   end
 
   # Puts monban into test mode. This will disable hashing passwords

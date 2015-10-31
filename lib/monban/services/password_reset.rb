@@ -16,7 +16,7 @@ module Monban
       # Perform the service.
       def perform
         field = Monban.config(@scope).user_token_store_field
-        digested_password = Monban.hash_token(@new_password)
+        digested_password = Monban.hash_token(@new_password, @scope)
         @user[field] = digested_password
       end
     end

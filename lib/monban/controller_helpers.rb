@@ -42,7 +42,7 @@ module Monban
     # @yield Yields to the block if the user is signed up successfully
     # @return [Object] returns the value from calling perform on the {Monban::Services::SignUp} service
     def sign_up user_params
-      Monban.config(authenticate_scope).sign_up_service.new(user_params).perform.tap do |status|
+      Monban.config(authenticate_scope).sign_up_service.new(user_params, authenticate_scope).perform.tap do |status|
         if status && block_given?
           yield
         end

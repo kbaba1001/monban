@@ -25,7 +25,7 @@ module Monban
       def token_digest(user_params)
         undigested_token = user_params[token_field]
         unless undigested_token.blank?
-          Monban.hash_token(undigested_token)
+          Monban.hash_token(undigested_token, @scope)
         end
       end
 

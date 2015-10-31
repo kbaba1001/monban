@@ -28,7 +28,7 @@ module Monban
       private
 
       def authenticated?
-        @user && Monban.compare_token(@user.send(token_store_field), @undigested_token)
+        @user && Monban.compare_token(@user.send(token_store_field), @undigested_token, @scope)
       end
 
       def token_store_field
